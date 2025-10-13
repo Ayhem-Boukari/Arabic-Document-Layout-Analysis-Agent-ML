@@ -1,0 +1,9 @@
+# YOLOv8 dataset definition (placeholder)
+# Update paths and class names as needed.
+path: ./data
+train: images/train
+val: images/val
+# test: images/test  # optional
+
+nc: 5
+names: [header, paragraph, table, figure, footer]

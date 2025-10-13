@@ -1,0 +1,6 @@
+# Baseline model metrics (Iteration 1)
+# Fixed validation set: 47 images, 814 instances (as per report)
+precision: 0.32
+recall: 0.28
+mAP@50: 0.27
+mAP@50–95: 0.14

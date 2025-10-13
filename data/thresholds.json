@@ -1,0 +1,16 @@
+{
+  "nms_iou": 0.50,
+  "min_area_frac": { "Table": 0.0008, "Image": 0.0008 },
+  "conf": {
+    "Title": 0.45,
+    "Text": 0.40,
+    "Caption": 0.35,
+    "Table": 0.40,
+    "Image": 0.50,
+    "Footer": 0.30,
+    "Stamp/Signature": 0.45,
+    "List-item": 0.35,
+    "Keyvalue": 0.30,
+    "Check-box": 0.30
+  }
+}

@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+
+# Virtual environments
+.venv/
+venv*/
+env*/
+
+# Jupyter
+.ipynb_checkpoints/
+.notebooks_cache/
+
+# Data and large artifacts (keep the repo light)
+pdfs/
+images/
+labels/
+all_images/
+data/images/
+data/labels/
+results/images/
+runs/
+models/
+weights/
+newspaper_yolo/
+newspaper_yolo_api/
+
+# Large model/artifact formats
+*.pt
+*.pth
+*.onnx
+*.tflite
+*.engine
+*.safetensors
+*.ckpt
+*.zip
+*.tar
+*.gz
+*.7z
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
