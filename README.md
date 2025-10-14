@@ -1,41 +1,49 @@
-# Arabic Document Layout Analysis Agent (ML-only)
+# 📄 Arabic Document Layout Analysis Agent (ML-only)
 
-A modern computer vision project for detecting document layout elements (titles, paragraphs, tables, figures, etc.) using YOLOv8.
+A state-of-the-art computer vision solution for detecting and classifying document layout elements in Arabic documents using YOLOv8 architecture.
 
+![YOLOv8](https://img.shields.io/badge/YOLOv8-Object%20Detection-00FFFF?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-## Overview
-This is the ML-only repository (no FastAPI app). It contains training, evaluation, inference notebooks/scripts, results, and configs reflecting the real experiments reported in the internship report. For the web service, see the separate FastAPI repository.
+## 🎯 Overview
 
-### Motivation
-- Automate document analysis for digitization and information extraction.
-- Enable downstream tasks such as OCR, semantic parsing, and metadata extraction.
-- Build a reusable, production-ready pipeline with an inference API.
+This repository contains the machine learning pipeline for **Arabic Document Layout Analysis** - a comprehensive solution for automatically detecting and classifying structural elements in Arabic documents including titles, paragraphs, tables, figures, and more. This is the ML-only repository focusing on training, evaluation, and inference workflows.
 
-## Repository Structure
+> **Note**: For the production web service and API, please refer to the separate FastAPI repository.
 
-```
-.
-├── data/
-│   └── data.yaml                 # Dataset config (paths and class names)
-├── notebooks/
+## 🚀 Motivation
+
+- **Automate document analysis** for large-scale digitization projects
+- **Enable intelligent information extraction** from Arabic documents
+- **Build production-ready pipelines** for downstream tasks like OCR and semantic parsing
+- **Support digital transformation** of Arabic document archives and repositories
+
+## 📊 Repository Structure
+
+```plaintext
+arabic-document-layout-analysis/
+├── 📁 data/
+│   └── data.yaml                 # Dataset configuration (paths & classes)
+├── 📁 notebooks/
 │   ├── 01_data_preparation.ipynb
 │   ├── 02_training.ipynb
 │   ├── 03_evaluation.ipynb
 │   ├── 04_inference_and_api.ipynb
 │   └── 05_dataset_unification_and_active_learning.ipynb
-├── results/
+├── 📁 results/
 │   ├── baseline_results.txt      # Baseline (Iteration 1) metrics
 │   └── final_results.txt         # Final (Iteration 2) metrics
-├── src/
+├── 📁 src/
 │   ├── __init__.py
-│   ├── config.py                 # Defaults updated to final settings (imgsz=1280, epochs=80, patience=30)
+│   ├── config.py                 # Training configuration (imgsz=1280, epochs=80)
 │   ├── evaluate.py
 │   ├── infer.py
 │   ├── train.py
-│   └── utils/
+│   └── 📁 utils/
 │       ├── __init__.py
 │       └── visualize.py
-├── tools/
+├── 📁 tools/
 │   ├── convert_pdfs.py
 │   ├── dataset.py
 │   ├── build_unified_dataset.py
@@ -49,46 +57,52 @@ This is the ML-only repository (no FastAPI app). It contains training, evaluatio
 └── README.md
 ```
 
-## Dataset Summary
-- Format: YOLO (images/ and labels/ with .txt files, or data.yaml)
-- Classes: configurable in `data/data.yaml` (12-class taxonomy used in report)
-- Sizes (from the report):
-  - Baseline training: 190 images
-  - Final training: 205 images (after +15 hard pages)
-  - Validation: 47 images (locked), 814 instances
+## 📈 Dataset Summary
 
-> Tip: Place raw PDFs/images into `data/raw/`, preprocess into YOLO-format under `data/processed/`.
+| Aspect | Specification |
+|--------|---------------|
+| **Format** | YOLO format (images/ + labels/ with .txt files) |
+| **Classes** | 12-class taxonomy (configurable in `data/data.yaml`) |
+| **Training Set** | 205 images (190 baseline + 15 hard pages) |
+| **Validation Set** | 47 images, 814 instances (locked) |
+| **Recommended Structure** | Raw PDFs in `data/raw/`, processed data in `data/processed/` |
 
-## Pipeline
-- Data ingestion ➜ Preprocessing ➜ YOLOv8 training ➜ Evaluation ➜ Export weights ➜ Inference
+## 🔄 ML Pipeline
 
-
-
-### Training/Inference Parameters
-
-- Baseline (Iteration 1): YOLOv8s, imgsz=640, ~50 epochs, patience=20, batch=16, lr0=0.01, device=cpu.
-- Final (Iteration 2): YOLOv8s, imgsz=1280, epochs=80, patience=30, batch=16, lr0=0.01, device=cpu.
-
-Final defaults are reflected in `src/config.py` so training/inference uses the validated settings by default.
-
-| Setting  | Baseline (Iter. 1) | Final (Iter. 2) |
-|---------:|--------------------:|-----------------:|
-| Model    | YOLOv8s             | YOLOv8s          |
-| imgsz    | 640                 | 1280             |
-| epochs   | 50                  | 80               |
-| patience | 20                  | 30               |
-| batch    | 16                  | 16               |
-| lr0      | 0.01                | 0.01             |
-| device   | cpu                 | cpu              |
-
-### Post-processing thresholds
-
-Per the report, we used class-wise thresholds and light rules to reduce visible noise. A reference configuration is provided in `data/thresholds.json`:
-
+```mermaid
+graph LR
+    A[Data Ingestion] --> B[Preprocessing]
+    B --> C[YOLOv8 Training]
+    C --> D[Evaluation]
+    D --> E[Export Weights]
+    E --> F[Inference]
 ```
+
+## ⚙️ Training Configuration
+
+| Setting | Baseline (Iter. 1) | Final (Iter. 2) |
+|---------|-------------------|-----------------|
+| **Model** | YOLOv8s | YOLOv8s |
+| **Image Size** | 640 | 1280 |
+| **Epochs** | 50 | 80 |
+| **Patience** | 20 | 30 |
+| **Batch Size** | 16 | 16 |
+| **Learning Rate** | 0.01 | 0.01 |
+| **Device** | CPU | CPU |
+
+> **Note**: Final configuration is set as default in `src/config.py`
+
+## 🎯 Post-Processing Configuration
+
+Optimal thresholds from experimental results:
+
+```json
 {
   "nms_iou": 0.50,
-  "min_area_frac": { "Table": 0.0008, "Image": 0.0008 },
+  "min_area_frac": { 
+    "Table": 0.0008, 
+    "Image": 0.0008 
+  },
   "conf": {
     "Title": 0.45, "Text": 0.40, "Caption": 0.35,
     "Table": 0.40, "Image": 0.50,
@@ -98,87 +112,104 @@ Per the report, we used class-wise thresholds and light rules to reduce visible 
 }
 ```
 
-You can load this in your inference pipeline to filter predictions post-NMS.
+## 📊 Performance Metrics
 
-### Performance notes (from the report)
-- CPU inference latency: ~0.6 s/image at 1280 px (YOLOv8s)
-- Strong classes: Image (~0.785), Caption (~0.770), Table (~0.565)
-- Challenging classes (scarce): Footer (~0.173), Keyvalue (~0.0047), Check-box (~0.0)
+| Metric | Value |
+|--------|-------|
+| **CPU Inference Latency** | ~0.6 s/image at 1280px |
+| **Strong Classes (mAP)** | Image (~0.785), Caption (~0.770), Table (~0.565) |
+| **Challenging Classes** | Footer (~0.173), Keyvalue (~0.0047), Check-box (~0.0) |
 
-### Model checkpoints
-- This ML-only repo does not include weights. Place your trained weights under `models/` (git-ignored) and update paths accordingly.
-- Example usage: `python -c "from src.evaluate import evaluate; evaluate('models/best.pt')"`
+## 🛠 Installation & Setup
 
+### 1. Create Virtual Environment
 
-## How to Use
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 
-### 1) Install dependencies
-Use a virtual environment (recommended).
-
-```powershell
-python -m venv venv ; .\venv\Scripts\Activate.ps1 ; pip install -r requirements.txt
+# Linux/Mac
+python -m venv venv
+source venv/bin/activate
 ```
 
-If you use CUDA, please install a torch build compatible with your GPU drivers from pytorch.org before installing requirements.
+### 2. Install Dependencies
 
-### 2) Train the model
-Ensure your `data/data.yaml` points to images/labels and defines class names.
+```bash
+pip install -r requirements.txt
+```
 
-```powershell
+> **CUDA Users**: Install PyTorch compatible with your GPU from [pytorch.org](https://pytorch.org) before installing requirements.
+
+## 🚀 Quick Start
+
+### 1. Training
+
+Ensure your `data/data.yaml` is properly configured with image paths and class names:
+
+```bash
 python -m src.train
 ```
 
-Advanced options: edit defaults in `src/config.py` (epochs, batch, imgsz, device).
+### 2. Evaluation
 
-### 3) Evaluate
-Provide the path to your trained weights (e.g., `runs/detect/train/weights/best.pt`).
+Evaluate trained model performance:
 
-```powershell
+```bash
 python -c "from src.evaluate import evaluate; evaluate('models/best.pt')"
 ```
 
-### 4) Inference (script)
+### 3. Inference
 
-```powershell
+Run inference on validation images:
+
+```bash
 python -c "from src.infer import infer; infer('models/best.pt', 'data/processed/images/val')"
 ```
 
-<!-- API instructions are omitted in this ML-only repository. -->
+## 📝 Model Checkpoints
 
-## Lessons Learned
-- Data quality and label consistency are crucial for detection performance.
-- Balanced classes help stabilize training and improve recall.
-- Proper evaluation (mAP@50-95) and ablation studies guide model selection.
+> **Note**: This repository does not include pre-trained weights. Place your trained models under `models/` directory (git-ignored) and update paths accordingly.
 
-## Future Work
-- Multi-lingual and domain adaptation for diverse document types.
-- Post-processing for structure reconstruction (reading order, regions).
-- Export ONNX/TensorRT for faster inference.
+## 💡 Key Insights & Lessons Learned
 
-## Author
-- Name: Ayhem Boukari
-- Email: ayhem.boukari@enicar.ucar.tn
-- LinkedIn: https://www.linkedin.com/in/ayhem-boukari-3889b528b/
+- **Data Quality**: Label consistency is critical for detection performance
+- **Class Balance**: Balanced datasets stabilize training and improve recall
+- **Evaluation Strategy**: Comprehensive metrics (mAP@50-95) guide model selection
+- **Ablation Studies**: Systematic experiments validate architectural choices
 
-## License
-This project is licensed under the MIT License. See LICENSE for details.
+## 🎯 Future Roadmap
 
-## Push to GitHub (quick start)
+- [ ] **Multi-lingual adaptation** for diverse document types
+- [ ] **Domain-specific fine-tuning** for specialized documents
+- [ ] **Structure reconstruction** for reading order and region analysis
+- [ ] **Optimized deployment** with ONNX/TensorRT for faster inference
+- [ ] **Active learning integration** for continuous improvement
 
-```powershell
-# Initialize git (if not already)
-git init
+## 👨‍💻 Author
 
-# Set your main branch name
-git branch -M main
+**Ayhem Boukari**  
+- 📧 Email: [ayhem.boukari@enicar.ucar.tn](mailto:ayhem.boukari@enicar.ucar.tn)  
+- 💼 LinkedIn: [Ayhem Boukari](https://www.linkedin.com/in/ayhem-boukari-3889b528b/)  
+- 🏫 Institution: National Engineering School of Carthage (ENICar)
 
-# Add files and commit
-git add .
-git commit -m "Initial commit: Document Layout Detection Using YOLOv8"
+## 📄 License
 
-# Add your GitHub remote (replace URL with your repo)
-git remote add origin https://github.com/<your-username>/Arabic-Document-Layout-Analysis-Agent.git
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Push
-git push -u origin main
-```
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to submit issues, feature requests, or pull requests to help improve this project.
+
+## ⭐ Acknowledgments
+
+- Ultralytics for the YOLOv8 framework
+- Research community for document layout analysis benchmarks
+- Open-source computer vision libraries that made this work possible
+
+---
+
+**Built with ❤️ for advancing Arabic document analysis technology**
